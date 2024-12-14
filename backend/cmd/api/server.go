@@ -9,7 +9,7 @@ const version = "1.0.0"
 func main() {
 	e := echo.New()
 	h := initHandler()
-	e.GET("/healthcheck", h.healthCheckHandler)
-	
+	e.GET("/healthcheck", h.handleHealthCheck)
+
 	e.Logger.Fatal(e.Start(":4000"))
 }
