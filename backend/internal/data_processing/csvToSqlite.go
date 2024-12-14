@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/driver/sqlite"
@@ -14,7 +15,7 @@ import (
 
 type HDBRecord struct {
 	ID                uuid.UUID `gorm:"type:uuid;primary_key"`
-	Time              string
+	Time              time.Time
 	Town              string
 	FlatType          string
 	Block             int
@@ -35,6 +36,13 @@ func main() {
 		panic("failed to connect database")
 	}
 	db.AutoMigrate(&HDBRecord{})
+
+	err = db.Exec("DELETE FROM hdb_records").Error
+	if err != nil {
+		fmt.Printf("Error clearing table: %v\n", err)
+		return
+	}
+	fmt.Println("Cleared existing records from the table.")
 
 	csvFiles := []string{
 		"../../csvData/file1.csv",
@@ -59,14 +67,14 @@ func main() {
 				end = len(records)
 			}
 			batch := records[i:end]
-	
+
 			result := db.Create(&batch)
 			if result.Error != nil {
 				fmt.Printf("Error inserting batch starting at %d: %v\n", i, result.Error)
 				break
 			}
 		}
-	
+
 		fmt.Printf("Inserted %d records from %s\n", len(records), file)
 	}
 }
@@ -90,6 +98,9 @@ func readCSV(filePath string) ([]HDBRecord, error) {
 			continue
 		}
 
+		monthStr := row[0]
+		parsedTime, _ := time.Parse("2006-01", monthStr)
+
 		block, _ := strconv.Atoi((row[3]))
 		floorArea, _ := strconv.Atoi(row[6])
 		leaseCommenceDate, _ := strconv.Atoi(row[8])
@@ -98,7 +109,7 @@ func readCSV(filePath string) ([]HDBRecord, error) {
 
 		record := HDBRecord{
 			ID:                uuid.New(),
-			Time:              row[0],
+			Time:              parsedTime,
 			Town:              row[1],
 			FlatType:          row[2],
 			Block:             block,
