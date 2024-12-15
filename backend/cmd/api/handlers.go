@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/bedminer1/hdb2/internal/calculation"
 	"github.com/bedminer1/hdb2/internal/db"
 	"github.com/labstack/echo/v4"
@@ -47,6 +49,10 @@ func (h *handler) handleGetRecords(c echo.Context) error {
 	})
 }
 
+// ======================== //
+// SIMPLE DATE SORTED STATS //
+// ======================== //
+
 func (h *handler) handleGetMonthlyStats(c echo.Context) error {
 	// QUERY PARAMS
 	start := c.QueryParam("start")
@@ -66,7 +72,9 @@ func (h *handler) handleGetMonthlyStats(c echo.Context) error {
 		return c.JSON(400, echo.Map{"error": err.Error()})
 	}
 
+	// DO CALCULATIONS
 	monthlyStats := calculation.MonthlyStats(records)
+
 	return c.JSON(200, echo.Map{
 		"number of records": len(records),
 		"number of months":  len(monthlyStats),
@@ -93,10 +101,63 @@ func (h *handler) handleGetYearlyStats(c echo.Context) error {
 		return c.JSON(400, echo.Map{"error": err.Error()})
 	}
 
+	// DO CALCULATIONS
 	yearlyStats := calculation.YearlyStats(records)
+
 	return c.JSON(200, echo.Map{
 		"number of records": len(records),
-		"number of years":  len(yearlyStats),
-		"yearly_stats":     yearlyStats,
+		"number of years":   len(yearlyStats),
+		"yearly_stats":      yearlyStats,
+	})
+}
+
+// =============== //
+// PREDICTED STATS //
+// =============== //
+
+func (h *handler) handleGetLinearRegressionPrediction(c echo.Context) error {
+	// QUERY PARAMS
+	start := c.QueryParam("start")
+	if start == "" {
+		start = "2018-01"
+	}
+	end := c.QueryParam("end")
+	if end == "" {
+		end = "2021-01"
+	}
+	town := c.QueryParam("town")
+	flatType := c.QueryParam("flatType")
+
+	timeAheadStr := c.QueryParam("timeAhead")
+	timeAhead, _ := strconv.Atoi(timeAheadStr)
+	if timeAhead == 0 {
+		timeAhead = 5
+	}
+
+	dateBasis := c.QueryParam("dateBasis")
+	var dateFormat string
+	switch dateBasis {
+	case "yearly":
+		dateFormat = "2006"
+	case "monthly", "":
+		dateFormat = "2006-01"
+	default:
+		return c.JSON(400, echo.Map{"error": "invalid date basis"})
+	}
+
+	// CALL FETCH FROM DB PACKAGE
+	records, err := db.Fetch(start, end, town, flatType, h.DB)
+	if err != nil {
+		return c.JSON(400, echo.Map{"error": err.Error()})
+	}
+
+	// DO CALCULATIONS
+	xlyStats := calculation.CalculateXlyStats(dateFormat, records)
+	predictions, historicalData, model := calculation.CalculateLinearRegression(xlyStats, timeAhead, dateBasis)
+
+	return c.JSON(200, echo.Map{
+		"model": model,
+		"predictions":     predictions,
+		"historical_data": historicalData,
 	})
 }

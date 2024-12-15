@@ -13,6 +13,7 @@ func main() {
 	e.GET("/records", h.handleGetRecords)
 	e.GET("/monthly_stats", h.handleGetMonthlyStats)
 	e.GET("/yearly_stats", h.handleGetYearlyStats)
+	e.GET("/linear_regression", h.handleGetLinearRegressionPrediction)
 
 	e.Logger.Fatal(e.Start(":4000"))
 }

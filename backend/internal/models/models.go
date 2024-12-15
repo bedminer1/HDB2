@@ -8,9 +8,9 @@ import (
 
 type HDBRecord struct {
 	ID                uuid.UUID `gorm:"type:uuid;primary_key" json:"id"`
-	Time              time.Time `gorm:"index" json:"time"`            
-	Town              string    `gorm:"index" json:"town"`            
-	FlatType          string    `gorm:"index" json:"flat_type"`       
+	Time              time.Time `gorm:"index" json:"time"`
+	Town              string    `gorm:"index" json:"town"`
+	FlatType          string    `gorm:"index" json:"flat_type"`
 	Block             int       `json:"block"`
 	StreetName        string    `json:"street_name"`
 	StoreyRange       string    `json:"storey_range"`
@@ -28,4 +28,9 @@ type MonthlyRecord struct {
 	NumberOfUnits       int       `json:"number_of_units"`
 	AverageResalePrice  float64   `json:"average_resale_price"`
 	AveragePricePerArea float64   `json:"average_price_per_area"`
+}
+
+type SimplifiedTimeBasedRecord struct {
+	Date               time.Time `json:"date"`
+	AverageResalePrice float64   `json:"average_resale_price"`
 }
