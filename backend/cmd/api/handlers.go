@@ -34,6 +34,8 @@ func (h *handler) handleGetRecords(c echo.Context) error {
 	if end == "" {
 		end = "2021-01"
 	}
+	town := c.QueryParam("town")
+	flatType := c.QueryParam("flatType")
 
 	startTime, err := time.Parse("2006-01", start)
 	if err != nil {
@@ -44,7 +46,15 @@ func (h *handler) handleGetRecords(c echo.Context) error {
 		return c.JSON(400, echo.Map{"error": "Invalid 'end' date format, use YYYY-MM"})
 	}
 
-	h.DB.Where("time BETWEEN ? AND ?", startTime, endTime).Find(&records)
+	query := h.DB.Where("time BETWEEN ? AND ?", startTime, endTime)
+
+	if town != "" {
+		query = query.Where("town = ?", town)
+	}
+	if flatType != "" {
+		query = query.Where("flat_type = ?", flatType)
+	}
+	query.Find(&records)
 
 	return c.JSON(200, echo.Map{
 		"number of records": len(records),
