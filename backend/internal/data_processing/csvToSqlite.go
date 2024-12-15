@@ -7,26 +7,12 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/bedminer1/hdb2/internal/models"
 	"github.com/google/uuid"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
-
-type HDBRecord struct {
-	ID                uuid.UUID `gorm:"type:uuid;primary_key"`
-	Time              time.Time
-	Town              string
-	FlatType          string
-	Block             int
-	StreetName        string
-	StoreyRange       string
-	FloorArea         int
-	FlatModel         string
-	LeaseCommenceDate int
-	ResalePrice       int
-	PricePerArea      float64
-}
 
 func main() {
 	db, err := gorm.Open(sqlite.Open("../../hdb.db"), &gorm.Config{
@@ -35,7 +21,7 @@ func main() {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	db.AutoMigrate(&HDBRecord{})
+	db.AutoMigrate(&models.HDBRecord{})
 
 	err = db.Exec("DELETE FROM hdb_records").Error
 	if err != nil {
@@ -55,7 +41,11 @@ func main() {
 	batchSize := 200
 
 	for _, file := range csvFiles {
-		records, err := readCSV(file)
+		priceIndex := 9
+		if file == "../../csvData/file3.csv" || file == "../../csvData/file4.csv" {
+			priceIndex = 10
+		}
+		records, err := readCSV(file, priceIndex)
 		if err != nil {
 			continue
 		}
@@ -79,7 +69,7 @@ func main() {
 	}
 }
 
-func readCSV(filePath string) ([]HDBRecord, error) {
+func readCSV(filePath string, priceIndex int) ([]models.HDBRecord, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -92,7 +82,7 @@ func readCSV(filePath string) ([]HDBRecord, error) {
 		return nil, err
 	}
 
-	var records []HDBRecord
+	var records []models.HDBRecord
 	for i, row := range rows {
 		if i == 0 {
 			continue
@@ -104,10 +94,10 @@ func readCSV(filePath string) ([]HDBRecord, error) {
 		block, _ := strconv.Atoi((row[3]))
 		floorArea, _ := strconv.Atoi(row[6])
 		leaseCommenceDate, _ := strconv.Atoi(row[8])
-		resalePrice, _ := strconv.Atoi(row[9])
+		resalePrice, _ := strconv.Atoi(row[priceIndex])
 		pricePerArea := float64(resalePrice) / float64(floorArea)
 
-		record := HDBRecord{
+		record := models.HDBRecord{
 			ID:                uuid.New(),
 			Time:              parsedTime,
 			Town:              row[1],

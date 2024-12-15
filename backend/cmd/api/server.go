@@ -10,6 +10,7 @@ func main() {
 	e := echo.New()
 	h := initHandler()
 	e.GET("/healthcheck", h.handleHealthCheck)
+	e.GET("/records", h.handleGetRecords)
 
 	e.Logger.Fatal(e.Start(":4000"))
 }
