@@ -28,7 +28,12 @@ func Fetch(start, end, town, flatType string, db *gorm.DB) ([]models.HDBRecord, 
 	if flatType != "" {
 		query = query.Where("flat_type = ?", flatType)
 	}
-	query.Find(&records)
+
+	// Fetch data with limit and offset
+	result := query.Find(&records)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 
 	return records, nil
 }
