@@ -21,10 +21,10 @@ type HDBRecord struct {
 	PricePerArea      float64   `json:"price_per_area"`
 }
 
-type MonthlyRecord struct {
+type TimeBasedRecord struct {
 	Time                time.Time `json:"time"`
-	Towns               []string  `json:"towns"`
-	FlatTypes           []string  `json:"flat_types"`
+	Towns               []string  `json:"towns,omitempty"`
+	FlatTypes           []string  `json:"flat_types,omitempty"`
 	NumberOfUnits       int       `json:"number_of_units"`
 	AverageResalePrice  float64   `json:"average_resale_price"`
 	AveragePricePerArea float64   `json:"average_price_per_area"`
@@ -33,4 +33,9 @@ type MonthlyRecord struct {
 type SimplifiedTimeBasedRecord struct {
 	Date               time.Time `json:"date"`
 	AverageResalePrice float64   `json:"average_resale_price"`
+}
+
+type TownBasedRecord struct {
+	Town             string `json:"town"`
+	TimeBasedRecords []TimeBasedRecord `json:"records"`
 }

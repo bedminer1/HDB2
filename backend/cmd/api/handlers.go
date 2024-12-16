@@ -49,9 +49,9 @@ func (h *handler) handleGetRecords(c echo.Context) error {
 	})
 }
 
-// ======================== //
-// SIMPLE DATE SORTED STATS //
-// ======================== //
+// ================= //
+// DATE SORTED STATS //
+// ================= //
 
 func (h *handler) handleGetMonthlyStats(c echo.Context) error {
 	// QUERY PARAMS
@@ -72,7 +72,7 @@ func (h *handler) handleGetMonthlyStats(c echo.Context) error {
 		return c.JSON(400, echo.Map{"error": err.Error()})
 	}
 
-	// DO CALCULATIONS
+	// SORT AND CALCULATE
 	monthlyStats := calculation.MonthlyStats(records)
 
 	return c.JSON(200, echo.Map{
@@ -101,7 +101,7 @@ func (h *handler) handleGetYearlyStats(c echo.Context) error {
 		return c.JSON(400, echo.Map{"error": err.Error()})
 	}
 
-	// DO CALCULATIONS
+	// SORT AND CALCULATE
 	yearlyStats := calculation.YearlyStats(records)
 
 	return c.JSON(200, echo.Map{
@@ -109,6 +109,47 @@ func (h *handler) handleGetYearlyStats(c echo.Context) error {
 		"number of years":   len(yearlyStats),
 		"yearly_stats":      yearlyStats,
 	})
+}
+
+// ================= //
+// TOWN SORTED STATS //
+// ================= //
+func (h *handler) handleGetTownBasedStats(c echo.Context) error {
+	// QUERY PARAMS
+	start := c.QueryParam("start")
+	if start == "" {
+		start = "2018-01"
+	}
+	end := c.QueryParam("end")
+	if end == "" {
+		end = "2021-01"
+	}
+	town := c.QueryParam("town")
+	flatType := c.QueryParam("flatType")
+
+	dateBasis := c.QueryParam("dateBasis")
+	var dateFormat string
+	switch dateBasis {
+	case "yearly":
+		dateFormat = "2006"
+	case "monthly", "":
+		dateFormat = "2006-01"
+	default:
+		return c.JSON(400, echo.Map{"error": "invalid date basis"})
+	}
+
+	// CALL FETCH FROM DB PACKAGE
+	records, err := db.Fetch(start, end, town, flatType, h.DB)
+	if err != nil {
+		return c.JSON(400, echo.Map{"error": err.Error()})
+	}
+
+	// SORT AND CALCULATE
+	townBasedRecords := calculation.CalculateTownStats(records, dateFormat)
+	return c.JSON(200, echo.Map{
+		"records": townBasedRecords,
+	})
+
 }
 
 // =============== //

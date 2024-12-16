@@ -8,7 +8,7 @@ import (
 	"gonum.org/v1/gonum/stat"
 )
 
-func CalculateLinearRegression(records []models.MonthlyRecord, monthsAhead int, dateBasis string) ([]models.SimplifiedTimeBasedRecord, []models.SimplifiedTimeBasedRecord, string) {
+func CalculateLinearRegression(records []models.TimeBasedRecord, monthsAhead int, dateBasis string) ([]models.SimplifiedTimeBasedRecord, []models.SimplifiedTimeBasedRecord, string) {
 	var x []float64
 	var y []float64
 	var historicalData []models.SimplifiedTimeBasedRecord
