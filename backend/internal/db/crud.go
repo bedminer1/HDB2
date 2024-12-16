@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Fetch(start, end, town, flatType string, db *gorm.DB) ([]models.HDBRecord, error) {
+func Fetch(start, end string, towns []string, flatType string, db *gorm.DB) ([]models.HDBRecord, error) {
 	records := []models.HDBRecord{}
 
 	startTime, err := time.Parse("2006-01", start)
@@ -22,8 +22,8 @@ func Fetch(start, end, town, flatType string, db *gorm.DB) ([]models.HDBRecord, 
 
 	query := db.Where("time BETWEEN ? AND ?", startTime, endTime)
 
-	if town != "" {
-		query = query.Where("town = ?", town)
+	if len(towns) > 0 {
+		query = query.Where("town IN ?", towns)
 	}
 	if flatType != "" {
 		query = query.Where("flat_type = ?", flatType)

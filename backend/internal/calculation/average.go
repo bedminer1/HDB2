@@ -88,6 +88,11 @@ func CalculateTownStats(records []models.HDBRecord, dateFormat string) []models.
 	for town, townRecords := range townGroupedRecords {
 		timeBasedRecords := CalculateXlyStats(dateFormat, townRecords)
 
+		for i := range timeBasedRecords {
+			timeBasedRecords[i].Towns = nil
+			timeBasedRecords[i].FlatTypes = nil
+		}
+
 		townRecord := models.TownBasedRecord{
 			Town:             town,
 			TimeBasedRecords: timeBasedRecords,
