@@ -9,6 +9,7 @@ const version = "1.0.0"
 func main() {
 	e := echo.New()
 	h := initHandler()
+	
 	e.GET("/healthcheck", h.handleHealthCheck)
 	e.GET("/records", h.handleGetRecords)
 	e.GET("/monthly_stats", h.handleGetMonthlyStats)

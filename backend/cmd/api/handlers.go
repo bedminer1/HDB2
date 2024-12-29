@@ -295,7 +295,7 @@ func (h *handler) handleGetHoltWinters(c echo.Context) error {
 		SeasonLength: 12,
 	}
 	xlyStats := calculation.CalculateXlyStats(dateFormat, records)
-	predictions, historicalData, model := calculation.CalculateHoltWinters(xlyStats, 12, params)
+	predictions, historicalData, model := calculation.CalculateHoltWinters(xlyStats, timeAhead, params)
 
 	return c.JSON(200, echo.Map{
 		"model": model,
