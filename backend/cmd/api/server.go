@@ -16,6 +16,7 @@ func main() {
 	e.GET("/linear_regression", h.handleGetLinearRegressionPrediction)
 	e.GET("/town_stats", h.handleGetTownBasedStats)
 	e.GET("/polynomial_regression", h.handleGetPolynomialRegressionPrediction)
+	e.GET("/holt_winters", h.handleGetHoltWinters)
 
 	e.Logger.Fatal(e.Start(":4000"))
 }

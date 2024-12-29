@@ -250,3 +250,56 @@ func (h *handler) handleGetPolynomialRegressionPrediction(c echo.Context) error 
 		"historical_data": historicalData,
 	})
 }
+
+func (h *handler) handleGetHoltWinters(c echo.Context) error {
+	// QUERY PARAMS
+	start := c.QueryParam("start")
+	if start == "" {
+		start = "2018-01"
+	}
+	end := c.QueryParam("end")
+	if end == "" {
+		end = "2021-01"
+	}
+	towns := c.QueryParams()["towns"]
+	flatType := c.QueryParam("flatType")
+
+	timeAheadStr := c.QueryParam("timeAhead")
+	timeAhead, _ := strconv.Atoi(timeAheadStr)
+	if timeAhead == 0 {
+		timeAhead = 5
+	}
+
+	dateBasis := c.QueryParam("dateBasis")
+	var dateFormat string
+	switch dateBasis {
+	case "yearly":
+		dateFormat = "2006"
+	case "monthly", "":
+		dateFormat = "2006-01"
+	default:
+		return c.JSON(400, echo.Map{"error": "invalid date basis"})
+	}
+
+	// CALL FETCH FROM DB PACKAGE
+	records, err := db.Fetch(start, end, towns, flatType, h.DB)
+	if err != nil {
+		return c.JSON(400, echo.Map{"error": err.Error()})
+	}
+
+	// DO CALCULATIONS
+	params := calculation.HoltWintersParameters{
+		Alpha:       0.2,
+		Beta:        0.1,
+		Gamma:       0.3,
+		SeasonLength: 12,
+	}
+	xlyStats := calculation.CalculateXlyStats(dateFormat, records)
+	predictions, historicalData, model := calculation.CalculateHoltWinters(xlyStats, 12, params)
+
+	return c.JSON(200, echo.Map{
+		"model": model,
+		"predictions":     predictions,
+		"historical_data": historicalData,
+	})
+}
