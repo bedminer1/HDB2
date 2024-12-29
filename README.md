@@ -17,14 +17,14 @@ The server is now running, here is a list of endpoints.
 3. /yearly_stats does the same thing but separated into years
 4. /town_stats gets HDB records and sorts them into towns, then giving a series of time based records for each town
 
-Query parameters:
-- start (optional): The start date for filtering records. Defaults to 2018-01 if not provided.
+Query parameters(optional):
+- start: The start date for filtering records. Defaults to 2018-01 if not provided.
 Example: ?start=2020-01
-- end (optional): The end date for filtering records. Defaults to 2021-01 if not provided.
+- end: The end date for filtering records. Defaults to 2021-01 if not provided.
 Example: ?end=2021-12
-- towns (optional): A list of towns to filter the records. Can be provided multiple times.
+- towns: A list of towns to filter the records. Can be provided multiple times.
 Example: ?towns=Ang%20Mo%20Kio&towns=Bedok
-- flatType (optional): Filter by flat type (e.g., 4-Room, 5-Room).
+- flatType: Filter by flat type (e.g., 4-Room, 5-Room).
 Example: ?flatType=4-Room
 
 #### Predicting
@@ -32,19 +32,19 @@ Example: ?flatType=4-Room
 2. /polynomial_regression gives you the same thing but for a polynomial regression model
 3. /holt_winters gives you predictions according the Holt-Winters model
 
-Query Parameters:
+Query Parameter(optional):
 
-- start (optional): The start date for filtering records used in the model. Defaults to 2018-01.
+- start: The start date for filtering records used in the model. Defaults to 2018-01.
 Example: ?start=2020-01
-- end (optional): The end date for filtering records used in the model. Defaults to 2021-01.
+- end: The end date for filtering records used in the model. Defaults to 2021-01.
 Example: ?end=2021-12
-- towns (optional): A list of towns to filter the records. Can be provided multiple times.
+- towns: A list of towns to filter the records. Can be provided multiple times.
 Example: ?towns=Ang%20Mo%20Kio&towns=Bedok
-- flatType (optional): Filter by flat type (e.g., 4-Room, 5-Room).
+- flatType: Filter by flat type (e.g., 4-Room, 5-Room).
 Example: ?flatType=4-Room
-- timeAhead (optional): The number of time units (months or years) to predict into the future. Defaults to 5 if not specified.
+- timeAhead: The number of time units (months or years) to predict into the future. Defaults to 5 if not specified.
 Example: ?timeAhead=12
-- dateBasis (optional): Defines the time unit for prediction:
+- dateBasis: Defines the time unit for prediction:
 monthly (default): Predicts monthly values.
 yearly: Predicts yearly values.
 Example: ?dateBasis=yearly
