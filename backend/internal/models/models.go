@@ -39,3 +39,11 @@ type TownBasedRecord struct {
 	Town             string `json:"town"`
 	TimeBasedRecords []TimeBasedRecord `json:"records"`
 }
+
+type TownPrediction struct {
+	Town            string
+	HistoricalData  []SimplifiedTimeBasedRecord
+	PredictedData   []SimplifiedTimeBasedRecord
+	ExpectedROI     float64
+	PredictionModel string
+}

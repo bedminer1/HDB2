@@ -153,6 +153,51 @@ func (h *handler) handleGetTownBasedStats(c echo.Context) error {
 
 }
 
+func (h *handler) handleGetTownBasedPredictions(c echo.Context) error {
+	// QUERY PARAMS
+	start := c.QueryParam("start")
+	if start == "" {
+		start = "2018-01"
+	}
+	end := c.QueryParam("end")
+	if end == "" {
+		end = "2021-01"
+	}
+	towns := c.QueryParams()["towns"]
+	flatType := c.QueryParam("flatType")
+
+	timeAheadStr := c.QueryParam("timeAhead")
+	timeAhead, _ := strconv.Atoi(timeAheadStr)
+	if timeAhead == 0 {
+		timeAhead = 5
+	}
+
+	dateBasis := c.QueryParam("dateBasis")
+	var dateFormat string
+	switch dateBasis {
+	case "yearly":
+		dateFormat = "2006"
+	case "monthly", "":
+		dateFormat = "2006-01"
+	default:
+		return c.JSON(400, echo.Map{"error": "invalid date basis"})
+	}
+
+	// CALL FETCH FROM DB PACKAGE
+	records, err := db.Fetch(start, end, towns, flatType, h.DB)
+	if err != nil {
+		return c.JSON(400, echo.Map{"error": err.Error()})
+	}
+
+	// SORT AND CALCULATE
+	xlyStats := calculation.CalculateXlyStats(dateFormat, records)
+	townBasedPredictions := calculation.CalculateTownTrends(xlyStats, timeAhead, dateBasis)
+	return c.JSON(200, echo.Map{
+		"records": townBasedPredictions,
+	})
+
+}
+
 // =============== //
 // PREDICTED STATS //
 // =============== //
