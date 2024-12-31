@@ -46,11 +46,8 @@ func CalculateTownTrends(records []models.HDBRecord, monthsAhead int, dateBasis,
 	// Iterate through each town's records
 	for town, townRecords := range townGroupedRecords {
 		timeBasedRecords := CalculateXlyStats(dateFormat, townRecords)
-
-		// Call CalculatePolynomialRegression for each town
 		predictedData, historicalData, model := CalculatePolynomialRegression(timeBasedRecords, 4, monthsAhead, dateBasis)
 
-		// Calculate ExpectedROI based on predictedData and historicalData
 		var expectedROI float64
 		if len(historicalData) > 0 && len(predictedData) > 0 {
 			initialPrice := historicalData[len(historicalData)-1].AverageResalePrice
@@ -65,6 +62,8 @@ func CalculateTownTrends(records []models.HDBRecord, monthsAhead int, dateBasis,
 			Town:            town,
 			HistoricalData:  historicalData,
 			PredictedData:   predictedData,
+			MostRecentPrice: historicalData[len(historicalData)-1].AverageResalePrice,
+			FinalPredictedPrice: predictedData[len(predictedData)-1].AverageResalePrice,
 			ExpectedROI:     expectedROI,
 			PredictionModel: model,
 		})

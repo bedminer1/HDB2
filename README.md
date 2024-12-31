@@ -31,6 +31,7 @@ Query parameters(optional):
 1. /linear_regression gives you a linear regression formula and predictions by a linear regression model
 2. /polynomial_regression gives you the same thing but for a polynomial regression model
 3. /holt_winters gives you predictions according the Holt-Winters model
+4. /town_predicting gives the expected Return of Investment based on different towns after a set number of time
 
 Query Parameter(optional):
 

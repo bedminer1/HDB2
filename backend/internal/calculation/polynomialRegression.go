@@ -40,6 +40,7 @@ func CalculatePolynomialRegression(records []models.TimeBasedRecord, degree, mon
 	for i := 1; i <= monthsAhead; i++ {
 		futureX := lastX + float64(i)
 		predictedPrice := evaluatePolynomial(coefficients, futureX)
+		if predictedPrice < 0 { predictedPrice = 0 }
 
 		var futureDate time.Time
 		switch dateBasis {
