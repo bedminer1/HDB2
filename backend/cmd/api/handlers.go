@@ -150,7 +150,6 @@ func (h *handler) handleGetTownBasedStats(c echo.Context) error {
 	return c.JSON(200, echo.Map{
 		"records": townBasedRecords,
 	})
-
 }
 
 func (h *handler) handleGetTownBasedPredictions(c echo.Context) error {
@@ -179,8 +178,6 @@ func (h *handler) handleGetTownBasedPredictions(c echo.Context) error {
 		dateFormat = "2006"
 	case "monthly", "":
 		dateFormat = "2006-01"
-	default:
-		return c.JSON(400, echo.Map{"error": "invalid date basis"})
 	}
 
 	// CALL FETCH FROM DB PACKAGE
@@ -190,8 +187,7 @@ func (h *handler) handleGetTownBasedPredictions(c echo.Context) error {
 	}
 
 	// SORT AND CALCULATE
-	xlyStats := calculation.CalculateXlyStats(dateFormat, records)
-	townBasedPredictions := calculation.CalculateTownTrends(xlyStats, timeAhead, dateBasis)
+	townBasedPredictions := calculation.CalculateTownTrends(records, timeAhead, dateBasis, dateFormat)
 	return c.JSON(200, echo.Map{
 		"records": townBasedPredictions,
 	})

@@ -63,7 +63,6 @@ func CalculatePolynomialRegression(records []models.TimeBasedRecord, degree, mon
 			model += fmt.Sprintf("%.4f", coef)
 		}
 	}
-	model += "\n"
 
 	return predictions, historicalData, model
 }

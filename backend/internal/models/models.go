@@ -42,8 +42,8 @@ type TownBasedRecord struct {
 
 type TownPrediction struct {
 	Town            string
-	HistoricalData  []SimplifiedTimeBasedRecord
-	PredictedData   []SimplifiedTimeBasedRecord
+	HistoricalData  []SimplifiedTimeBasedRecord `json:"-"`
+	PredictedData   []SimplifiedTimeBasedRecord `json:"-"`
 	ExpectedROI     float64
 	PredictionModel string
 }

@@ -1,22 +1,54 @@
 package calculation
 
-import "github.com/bedminer1/hdb2/internal/models"
+import (
+	"sort"
 
-func CalculateTownTrends(records []models.TimeBasedRecord, monthsAhead int, dateBasis string) []models.TownPrediction {
-	townRecords := make(map[string][]models.TimeBasedRecord)
+	"github.com/bedminer1/hdb2/internal/models"
+)
+
+func CalculateTownStats(records []models.HDBRecord, dateFormat string) []models.TownBasedRecord {
+	townGroupedRecords := make(map[string][]models.HDBRecord)
 
 	for _, record := range records {
-		for _, town := range record.Towns { // Iterate through each town in the record
-			townRecords[town] = append(townRecords[town], record)
+		townGroupedRecords[record.Town] = append(townGroupedRecords[record.Town], record)
+	}
+
+	var townBasedRecords []models.TownBasedRecord
+
+	for town, townRecords := range townGroupedRecords {
+		timeBasedRecords := CalculateXlyStats(dateFormat, townRecords)
+
+		for i := range timeBasedRecords {
+			timeBasedRecords[i].Towns = nil
+			timeBasedRecords[i].FlatTypes = nil
 		}
+
+		townRecord := models.TownBasedRecord{
+			Town:             town,
+			TimeBasedRecords: timeBasedRecords,
+		}
+
+		townBasedRecords = append(townBasedRecords, townRecord)
+	}
+
+	return townBasedRecords
+}
+
+func CalculateTownTrends(records []models.HDBRecord, monthsAhead int, dateBasis, dateFormat string) []models.TownPrediction {
+	townGroupedRecords := make(map[string][]models.HDBRecord)
+
+	for _, record := range records {
+		townGroupedRecords[record.Town] = append(townGroupedRecords[record.Town], record)
 	}
 
 	var predictions []models.TownPrediction
 
 	// Iterate through each town's records
-	for town, townRecord := range townRecords {
+	for town, townRecords := range townGroupedRecords {
+		timeBasedRecords := CalculateXlyStats(dateFormat, townRecords)
+
 		// Call CalculatePolynomialRegression for each town
-		predictedData, historicalData, model := CalculatePolynomialRegression(townRecord, 2, monthsAhead, dateBasis)
+		predictedData, historicalData, model := CalculatePolynomialRegression(timeBasedRecords, 4, monthsAhead, dateBasis)
 
 		// Calculate ExpectedROI based on predictedData and historicalData
 		var expectedROI float64
@@ -38,5 +70,13 @@ func CalculateTownTrends(records []models.TimeBasedRecord, monthsAhead int, date
 		})
 	}
 
+	sortPredictionsByROI(predictions)
+
 	return predictions
+}
+
+func sortPredictionsByROI(predictions []models.TownPrediction) {
+	sort.Slice(predictions, func(i, j int) bool {
+		return predictions[i].ExpectedROI > predictions[j].ExpectedROI
+	})
 }

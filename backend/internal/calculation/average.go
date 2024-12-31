@@ -75,31 +75,3 @@ func sortByTime(records []models.TimeBasedRecord) {
 		return records[i].Time.Before(records[j].Time)
 	})
 }
-
-func CalculateTownStats(records []models.HDBRecord, dateFormat string) []models.TownBasedRecord {
-	townGroupedRecords := make(map[string][]models.HDBRecord)
-
-	for _, record := range records {
-		townGroupedRecords[record.Town] = append(townGroupedRecords[record.Town], record)
-	}
-
-	var townBasedRecords []models.TownBasedRecord
-
-	for town, townRecords := range townGroupedRecords {
-		timeBasedRecords := CalculateXlyStats(dateFormat, townRecords)
-
-		for i := range timeBasedRecords {
-			timeBasedRecords[i].Towns = nil
-			timeBasedRecords[i].FlatTypes = nil
-		}
-
-		townRecord := models.TownBasedRecord{
-			Town:             town,
-			TimeBasedRecords: timeBasedRecords,
-		}
-
-		townBasedRecords = append(townBasedRecords, townRecord)
-	}
-
-	return townBasedRecords
-}
