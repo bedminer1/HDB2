@@ -3,6 +3,9 @@ This is a version 2 of my original HDB Project. The original project was just a 
 
 With this project, I have added the feature of using different models to predict future prices. Also, the feature of sorting HDB price data by area has been introduced, and the different areas will be compared.
 
+![Screenshot 2025-01-12 at 3 52 53 PM](https://github.com/user-attachments/assets/1fe2913a-5a0e-4706-8a78-c9393e7fd2d8)
+
+
 ## How to Use
 #### Running the server
 1. clone the project using `git clone https://github.com/bedminer1/HDB2.git`
