@@ -2,7 +2,6 @@ import sqlite3
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder
 import pickle
 import os
 
@@ -61,10 +60,8 @@ for town, data in town_data.items():
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
-    # Save the model and encoder
+    # Save the model
     model_path = os.path.join("models", f"{town.replace('/', '_')}_model.pkl")
-    encoder_path = os.path.join("models", f"{town.replace('/', '_')}_encoder.pkl")
-
     with open(model_path, "wb") as file:
         pickle.dump(model, file)
 
