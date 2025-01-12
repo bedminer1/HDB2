@@ -34,7 +34,7 @@ def predict():
     flat_type_num = flat_type_mapping[flat_type]
 
     start_date = datetime.date(2020, 1, 1)
-    end_date = datetime.date(2021, 1, 1)
+    end_date = datetime.date(2025, 1, 1)
     date_range = pd.date_range(start_date, end_date, freq="D")
 
     input_data = pd.DataFrame({
