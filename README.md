@@ -3,6 +3,9 @@ This is a version 2 of my original HDB Project. The original project was just a 
 
 With this project, I have added the feature of using different models to predict future prices. Also, the feature of sorting HDB price data by area has been introduced, and the different areas will be compared.
 
+![Screenshot 2025-01-12 at 3 52 53 PM](https://github.com/user-attachments/assets/1fe2913a-5a0e-4706-8a78-c9393e7fd2d8)
+
+
 ## How to Use
 #### Running the server
 1. clone the project using `git clone https://github.com/bedminer1/HDB2.git`
@@ -10,6 +13,7 @@ With this project, I have added the feature of using different models to predict
 3. run the server using the following command `go run .`
 
 The server is now running, here is a list of endpoints.
+
 
 ### Fetching 
 1. /records gets you a list of HDB records 
@@ -31,7 +35,7 @@ Query parameters(optional):
 1. /linear_regression gives you a linear regression formula and predictions by a linear regression model
 2. /polynomial_regression gives you the same thing but for a polynomial regression model
 3. /holt_winters gives you predictions according the Holt-Winters model
-4. /town_predicting gives the expected Return of Investment based on different towns after a set number of time
+4. /town_predictions gives the expected Return of Investment based on different towns after a set number of time
 
 Query Parameter(optional):
 
