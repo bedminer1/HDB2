@@ -26,16 +26,7 @@ func initHandler() *handler {
 
 func (h *handler) handleGetRecords(c echo.Context) error {
 	// QUERY PARAMS
-	start := c.QueryParam("start")
-	if start == "" {
-		start = "2018-01"
-	}
-	end := c.QueryParam("end")
-	if end == "" {
-		end = "2021-01"
-	}
-	towns := c.QueryParams()["towns"]
-	flatType := c.QueryParam("flatType")
+	start, end, towns, flatType, _, _, _ := parseQueryParams(c)
 
 	// CALL FETCH FROM DB PACKAGE
 	records, err := db.Fetch(start, end, towns, flatType, h.DB)
@@ -55,16 +46,7 @@ func (h *handler) handleGetRecords(c echo.Context) error {
 
 func (h *handler) handleGetMonthlyStats(c echo.Context) error {
 	// QUERY PARAMS
-	start := c.QueryParam("start")
-	if start == "" {
-		start = "2018-01"
-	}
-	end := c.QueryParam("end")
-	if end == "" {
-		end = "2021-01"
-	}
-	towns := c.QueryParams()["towns"]
-	flatType := c.QueryParam("flatType")
+	start, end, towns, flatType, _, _, _ := parseQueryParams(c)
 
 	// CALL FETCH FROM DB PACKAGE
 	records, err := db.Fetch(start, end, towns, flatType, h.DB)
@@ -84,16 +66,7 @@ func (h *handler) handleGetMonthlyStats(c echo.Context) error {
 
 func (h *handler) handleGetYearlyStats(c echo.Context) error {
 	// QUERY PARAMS
-	start := c.QueryParam("start")
-	if start == "" {
-		start = "2018-01"
-	}
-	end := c.QueryParam("end")
-	if end == "" {
-		end = "2021-01"
-	}
-	towns := c.QueryParams()["towns"]
-	flatType := c.QueryParam("flatType")
+	start, end, towns, flatType, _, _, _ := parseQueryParams(c)
 
 	// CALL FETCH FROM DB PACKAGE
 	records, err := db.Fetch(start, end, towns, flatType, h.DB)
@@ -117,27 +90,7 @@ func (h *handler) handleGetYearlyStats(c echo.Context) error {
 
 func (h *handler) handleGetTownBasedStats(c echo.Context) error {
 	// QUERY PARAMS
-	start := c.QueryParam("start")
-	if start == "" {
-		start = "2018-01"
-	}
-	end := c.QueryParam("end")
-	if end == "" {
-		end = "2021-01"
-	}
-	towns := c.QueryParams()["towns"]
-	flatType := c.QueryParam("flatType")
-
-	dateBasis := c.QueryParam("dateBasis")
-	var dateFormat string
-	switch dateBasis {
-	case "yearly":
-		dateFormat = "2006"
-	case "monthly", "":
-		dateFormat = "2006-01"
-	default:
-		return c.JSON(400, echo.Map{"error": "invalid date basis"})
-	}
+	start, end, towns, flatType, _, dateFormat, _ := parseQueryParams(c)
 
 	// CALL FETCH FROM DB PACKAGE
 	records, err := db.Fetch(start, end, towns, flatType, h.DB)
@@ -154,31 +107,7 @@ func (h *handler) handleGetTownBasedStats(c echo.Context) error {
 
 func (h *handler) handleGetTownBasedPredictions(c echo.Context) error {
 	// QUERY PARAMS
-	start := c.QueryParam("start")
-	if start == "" {
-		start = "2018-01"
-	}
-	end := c.QueryParam("end")
-	if end == "" {
-		end = "2021-01"
-	}
-	towns := c.QueryParams()["towns"]
-	flatType := c.QueryParam("flatType")
-
-	timeAheadStr := c.QueryParam("timeAhead")
-	timeAhead, _ := strconv.Atoi(timeAheadStr)
-	if timeAhead == 0 {
-		timeAhead = 5
-	}
-
-	dateBasis := c.QueryParam("dateBasis")
-	var dateFormat string
-	switch dateBasis {
-	case "yearly":
-		dateFormat = "2006"
-	case "monthly", "":
-		dateFormat = "2006-01"
-	}
+	start, end, towns, flatType, dateBasis, dateFormat, timeAhead := parseQueryParams(c)
 
 	// CALL FETCH FROM DB PACKAGE
 	records, err := db.Fetch(start, end, towns, flatType, h.DB)
@@ -200,33 +129,7 @@ func (h *handler) handleGetTownBasedPredictions(c echo.Context) error {
 
 func (h *handler) handleGetLinearRegressionPrediction(c echo.Context) error {
 	// QUERY PARAMS
-	start := c.QueryParam("start")
-	if start == "" {
-		start = "2018-01"
-	}
-	end := c.QueryParam("end")
-	if end == "" {
-		end = "2021-01"
-	}
-	towns := c.QueryParams()["towns"]
-	flatType := c.QueryParam("flatType")
-
-	timeAheadStr := c.QueryParam("timeAhead")
-	timeAhead, _ := strconv.Atoi(timeAheadStr)
-	if timeAhead == 0 {
-		timeAhead = 5
-	}
-
-	dateBasis := c.QueryParam("dateBasis")
-	var dateFormat string
-	switch dateBasis {
-	case "yearly":
-		dateFormat = "2006"
-	case "monthly", "":
-		dateFormat = "2006-01"
-	default:
-		return c.JSON(400, echo.Map{"error": "invalid date basis"})
-	}
+	start, end, towns, flatType, dateBasis, dateFormat, timeAhead := parseQueryParams(c)
 
 	// CALL FETCH FROM DB PACKAGE
 	records, err := db.Fetch(start, end, towns, flatType, h.DB)
@@ -247,33 +150,7 @@ func (h *handler) handleGetLinearRegressionPrediction(c echo.Context) error {
 
 func (h *handler) handleGetPolynomialRegressionPrediction(c echo.Context) error {
 	// QUERY PARAMS
-	start := c.QueryParam("start")
-	if start == "" {
-		start = "2018-01"
-	}
-	end := c.QueryParam("end")
-	if end == "" {
-		end = "2021-01"
-	}
-	towns := c.QueryParams()["towns"]
-	flatType := c.QueryParam("flatType")
-
-	timeAheadStr := c.QueryParam("timeAhead")
-	timeAhead, _ := strconv.Atoi(timeAheadStr)
-	if timeAhead == 0 {
-		timeAhead = 5
-	}
-
-	dateBasis := c.QueryParam("dateBasis")
-	var dateFormat string
-	switch dateBasis {
-	case "yearly":
-		dateFormat = "2006"
-	case "monthly", "":
-		dateFormat = "2006-01"
-	default:
-		return c.JSON(400, echo.Map{"error": "invalid date basis"})
-	}
+	start, end, towns, flatType, dateBasis, dateFormat, timeAhead := parseQueryParams(c)
 
 	// CALL FETCH FROM DB PACKAGE
 	records, err := db.Fetch(start, end, towns, flatType, h.DB)
@@ -294,33 +171,7 @@ func (h *handler) handleGetPolynomialRegressionPrediction(c echo.Context) error 
 
 func (h *handler) handleGetHoltWinters(c echo.Context) error {
 	// QUERY PARAMS
-	start := c.QueryParam("start")
-	if start == "" {
-		start = "2018-01"
-	}
-	end := c.QueryParam("end")
-	if end == "" {
-		end = "2021-01"
-	}
-	towns := c.QueryParams()["towns"]
-	flatType := c.QueryParam("flatType")
-
-	timeAheadStr := c.QueryParam("timeAhead")
-	timeAhead, _ := strconv.Atoi(timeAheadStr)
-	if timeAhead == 0 {
-		timeAhead = 5
-	}
-
-	dateBasis := c.QueryParam("dateBasis")
-	var dateFormat string
-	switch dateBasis {
-	case "yearly":
-		dateFormat = "2006"
-	case "monthly", "":
-		dateFormat = "2006-01"
-	default:
-		return c.JSON(400, echo.Map{"error": "invalid date basis"})
-	}
+	start, end, towns, flatType, _, dateFormat, timeAhead := parseQueryParams(c)
 
 	// CALL FETCH FROM DB PACKAGE
 	records, err := db.Fetch(start, end, towns, flatType, h.DB)
@@ -343,4 +194,35 @@ func (h *handler) handleGetHoltWinters(c echo.Context) error {
 		"predictions":     predictions,
 		"historical_data": historicalData,
 	})
+}
+
+func parseQueryParams(c echo.Context) (string, string, []string, string, string, string, int) {
+	// QUERY PARAMS
+	start := c.QueryParam("start")
+	if start == "" {
+		start = "2018-01"
+	}
+	end := c.QueryParam("end")
+	if end == "" {
+		end = "2021-01"
+	}
+	towns := c.QueryParams()["towns"]
+	flatType := c.QueryParam("flatType")
+
+	dateBasis := c.QueryParam("dateBasis")
+	var dateFormat string
+	switch dateBasis {
+	case "yearly":
+		dateFormat = "2006"
+	default: // defaults to 'monthly'
+		dateFormat = "2006-01"
+	}
+
+	timeAheadStr := c.QueryParam("timeAhead")
+	timeAhead, _ := strconv.Atoi(timeAheadStr)
+	if timeAhead == 0 {
+		timeAhead = 5
+	}
+
+	return start, end, towns, flatType, dateBasis, dateFormat, timeAhead
 }
