@@ -19,3 +19,12 @@ interface timeBasedRecord {
 	numberOfUnits: number
 	time: string
 }
+
+interface DataSet {
+	label: string;
+	data: number[];
+	xAxis: string[];
+	borderColor: string;
+	backgroundColor: string;
+  }
+  
