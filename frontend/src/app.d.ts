@@ -7,3 +7,15 @@ declare namespace App {
 	// interface Error {}
 	// interface Platform {}
 }
+
+interface townRecords {
+	town: string
+	records: timeBasedRecord[]
+}
+
+interface timeBasedRecord {
+	averagePricePerArea: number
+	averageResalePrice: number
+	numberOfUnits: number
+	time: string
+}

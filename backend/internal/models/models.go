@@ -24,10 +24,10 @@ type HDBRecord struct {
 type TimeBasedRecord struct {
 	Time                time.Time `json:"time"`
 	Towns               []string  `json:"towns,omitempty"`
-	FlatTypes           []string  `json:"flat_types,omitempty"`
-	NumberOfUnits       int       `json:"number_of_units"`
-	AverageResalePrice  float64   `json:"average_resale_price"`
-	AveragePricePerArea float64   `json:"average_price_per_area"`
+	FlatTypes           []string  `json:"flatTypes,omitempty"`
+	NumberOfUnits       int       `json:"numberOfUnits"`
+	AverageResalePrice  float64   `json:"averageResalePrice"`
+	AveragePricePerArea float64   `json:"averagePricePerArea"`
 }
 
 type SimplifiedTimeBasedRecord struct {
