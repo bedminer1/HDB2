@@ -1,5 +1,5 @@
 {
-    "towns": ["BEDOK", "YISHUN"],
-    "start": "2019-01",
+    "towns": ["BEDOK", "YISHUN", "CLEMENTI", "QUEENSTOWN"],
+    "start": "2001-01",
     "end": "2020-01"
 }

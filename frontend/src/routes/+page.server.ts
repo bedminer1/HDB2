@@ -23,7 +23,7 @@ export async function load() {
         }
 
         const data = await response.json()
-        let { records } = data
+        let { records }: { records: timeBasedRecord[]} = data
         return {
             records
         }
