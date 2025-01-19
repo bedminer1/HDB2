@@ -3,6 +3,8 @@
 	export let data: {
 		records: townRecords[]
 	}
+
+	console.log(data.records)
 </script>
 
 <div class="flex flex-col justify-center items-center h-screen w-full">
@@ -12,7 +14,7 @@
 			{
 				label: 'Historical Bid-Ask Spread Percentage',
 				data: [1, 2, 3],
-				xAxis: [1, 2, 3],
+				xAxis: ['1', '2', '3'],
 				borderColor: 'rgba(75, 192, 192, 1)',
 				backgroundColor: 'rgba(75, 192, 192, 0.2)',
 			}
