@@ -7,9 +7,29 @@
 	}
 	
 	const dates: string[] = []
-	for (let record of data.records[0].records) {
-		dates.push(record.time.substring(0, 7))
+	let maxRecords = 0
+	let recordWithMostRecords = 0
+	for (let i = 0; i < data.records.length; i++) {
+		let townRecord = data.records[i]
+		if (townRecord.records.length > maxRecords) {
+			maxRecords = townRecord.records.length
+			recordWithMostRecords = i
+		}
 	}
+
+	let start = data.start
+	let end = data.end
+	for (let record of data.records[recordWithMostRecords].records) {
+		const recordDate = record.time.substring(0, 7);
+		if (recordDate < start) {
+			continue
+		}
+		if (recordDate > end) {
+			break
+		}
+		dates.push(recordDate)
+	}
+
 	const pricesArr: (number | null)[][] = []
 	for (let townRecord of data.records) {
 		let townPrices: (number | null)[] = Array(dates.length).fill(null)
@@ -49,15 +69,19 @@
 		}
 		generatedObjects.push(obj)
 	}
-
 </script>
 
 <div class="flex flex-col justify-center items-center h-screen w-full">
+	<form>
+		<input type="text" class="input" name="start" bind:value={start}>
+		<input type="text" class="input" name="end" bind:value={end}>
+	</form>
+	
 	<LineChart
 	{...{
 		stats: generatedObjects,
 		label: "Price(SGD)"
 	}}>
-
 	</LineChart>
+
 </div>

@@ -19,7 +19,7 @@ export async function load() {
         const apiURL = `http://localhost:4000/town_stats?start=${start}&end=${end}&flatType=3%20ROOM` + townsQueries
         const response = await fetch(apiURL)
         if (!response.ok) {
-            throw new Error(`API request failed with status ${response.status}`) 
+            console.error(`API request failed with status ${response.status}`) 
         }
 
         const data = await response.json()
