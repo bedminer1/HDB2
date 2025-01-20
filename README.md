@@ -3,7 +3,7 @@ This is a version 2 of my original HDB Project. The original project was just a 
 
 With this project, I have added the feature of using different models to predict future prices. Also, the feature of sorting HDB price data by area has been introduced, and the different areas will be compared.
 
-![image](https://github.com/user-attachments/assets/cd54deab-bbfd-441e-b4d5-ce4ba2e1b1d8)
+![image](https://github.com/user-attachments/assets/78b2a866-2e18-4afc-b957-bd741b25e687)
 ![Screenshot 2025-01-12 at 3 52 53 PM](https://github.com/user-attachments/assets/1fe2913a-5a0e-4706-8a78-c9393e7fd2d8)
 
 
