@@ -13,7 +13,7 @@ export async function load() {
 
         let townsQueries = ""
         for (let town of towns) {
-            townsQueries += "&towns=" + town
+            townsQueries += "&towns=" + town.replace(/ /g, "%20")
         }
         
         const apiURL = `http://localhost:4000/town_stats?start=${start}&end=${end}&flatType=3%20ROOM` + townsQueries
@@ -25,7 +25,9 @@ export async function load() {
         const data = await response.json()
         let { records }: { records: timeBasedRecord[]} = data
         return {
-            records
+            records,
+            start: start + "-01",
+            end: end + "-01"
         }
 
     } catch (err) {

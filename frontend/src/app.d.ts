@@ -22,7 +22,7 @@ interface timeBasedRecord {
 
 interface DataSet {
 	label: string;
-	data: number[];
+	data: (number | null)[];
 	xAxis: string[];
 	borderColor: string;
 	backgroundColor: string;

@@ -2,17 +2,23 @@
 	import LineChart from "$lib/ components/LineChart.svelte";
 	export let data: {
 		records: townRecords[]
+		start: string
+		end: string
 	}
 	
 	const dates: string[] = []
 	for (let record of data.records[0].records) {
-		dates.push(record.time.substring(0, 10))
+		dates.push(record.time.substring(0, 7))
 	}
-	const pricesArr: number[][] = []
+	const pricesArr: (number | null)[][] = []
 	for (let townRecord of data.records) {
-		let townPrices: number[] = []
+		let townPrices: (number | null)[] = Array(dates.length).fill(null)
 		for (let timeRecord of townRecord.records) {
-			townPrices.push(timeRecord.averageResalePrice)
+			// Find the index of the record's time in the dates array
+			const dateIndex = dates.indexOf(timeRecord.time.substring(0, 7))
+			if (dateIndex !== -1) {
+				townPrices[dateIndex] = timeRecord.averageResalePrice
+			}
 		}
 		pricesArr.push(townPrices)
 	}

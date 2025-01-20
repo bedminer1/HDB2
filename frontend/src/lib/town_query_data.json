@@ -1,5 +1,13 @@
 {
-    "towns": ["BEDOK", "YISHUN", "CLEMENTI", "QUEENSTOWN"],
+    "towns": [
+    "BEDOK", 
+    "BISHAN", 
+    "CLEMENTI", 
+    "YISHUN",
+    "QUEENSTOWN", 
+    "SEMBAWANG", 
+    "SENGKANG"
+    ],
     "start": "2001-01",
     "end": "2020-01"
 }
