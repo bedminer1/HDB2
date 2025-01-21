@@ -5,42 +5,39 @@
 		start: string
 		end: string
 	}
-	
-	const dates: string[] = []
-	let maxRecords = 0
-	let recordWithMostRecords = 0
-	for (let i = 0; i < data.records.length; i++) {
-		let townRecord = data.records[i]
-		if (townRecord.records.length > maxRecords) {
-			maxRecords = townRecord.records.length
-			recordWithMostRecords = i
-		}
-	}
 
 	let start = data.start
 	let end = data.end
-	for (let record of data.records[recordWithMostRecords].records) {
-		const recordDate = record.time.substring(0, 7);
-		if (recordDate < start) {
-			continue
+	let dates: string[] = []
+	$: {
+		dates = []
+		const recordWithMostRecords = data.records.reduce((maxRecord, current) =>
+			current.records.length > maxRecord.records.length ? current : maxRecord
+		)
+		for (let record of recordWithMostRecords.records) {
+			const recordDate = record.time.substring(0, 7);
+			if (recordDate < start) {
+				continue
+			}
+			if (recordDate > end) {
+				break
+			}
+			dates.push(recordDate)
 		}
-		if (recordDate > end) {
-			break
-		}
-		dates.push(recordDate)
 	}
 
-	const pricesArr: (number | null)[][] = []
-	for (let townRecord of data.records) {
-		let townPrices: (number | null)[] = Array(dates.length).fill(null)
-		for (let timeRecord of townRecord.records) {
-			// Find the index of the record's time in the dates array
-			const dateIndex = dates.indexOf(timeRecord.time.substring(0, 7))
-			if (dateIndex !== -1) {
-				townPrices[dateIndex] = timeRecord.averageResalePrice
+	let pricesArr: (number | null)[][] = []
+	$: {
+		pricesArr = data.records.map(townRecord => {
+			let townPrices = Array(dates.length).fill(null);
+			for (let timeRecord of townRecord.records) {
+				const dateIndex = dates.indexOf(timeRecord.time.substring(0, 7));
+				if (dateIndex !== -1) {
+					townPrices[dateIndex] = timeRecord.averageResalePrice;
+				}
 			}
-		}
-		pricesArr.push(townPrices)
+			return townPrices;
+		})
 	}
 
 	function generateColors(count: number) {
@@ -56,18 +53,17 @@
 		return colors
 	}
 
-	const colors = generateColors(data.records.length)
-	const generatedObjects: DataSet[] = []
-	for (let i = 0; i < data.records.length; i++) {
-		const record = data.records[i]
-		const obj = {
+	$: colors = generateColors(data.records.length)
+	let generatedObjects: DataSet[] = []
+	$: {
+		generatedObjects = data.records.map((record, i) => ({
 			label: record.town,
 			data: pricesArr[i],
 			xAxis: dates,
 			borderColor: colors[i].borderColor,
 			backgroundColor: colors[i].backgroundColor
-		}
-		generatedObjects.push(obj)
+		}))
+		console.log(generatedObjects)
 	}
 </script>
 
