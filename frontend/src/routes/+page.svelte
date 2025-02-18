@@ -63,7 +63,6 @@
 			borderColor: colors[i].borderColor,
 			backgroundColor: colors[i].backgroundColor
 		}))
-		console.log(generatedObjects)
 	}
 </script>
 
@@ -79,5 +78,4 @@
 		label: "Price(SGD)"
 	}}>
 	</LineChart>
-
 </div>

@@ -55,3 +55,5 @@ Query Parameter(optional):
   - `monthly` *(default)*: Predicts monthly values.  
   - `yearly`: Predicts yearly values.  
   Example: `?dateBasis=yearly`
+
+
