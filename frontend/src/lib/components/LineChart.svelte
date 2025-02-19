@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
+    import { mode } from "mode-watcher"
     import { Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip, Legend } from 'chart.js';
 
     // Register necessary Chart.js components
@@ -10,7 +11,7 @@
 
     let chart: Chart | null = null
     let chartCanvas: HTMLCanvasElement
-    Chart.defaults.color = 'rgb(250,255,255)'
+    $: Chart.defaults.color = $mode === "dark" ? 'rgb(250,255,255)' : 'rgb(0,0,0)'
     Chart.defaults.font.size = 14
 
     onMount(() => {
@@ -20,7 +21,7 @@
     });
 
     $: {
-        if (chart && stats && stats.length > 0 && chartCanvas) {
+        if (chart && $mode && stats && stats.length > 0 && chartCanvas) {
             chart.destroy();
             createChart();
         }
