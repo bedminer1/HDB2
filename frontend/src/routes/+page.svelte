@@ -1,5 +1,5 @@
 <script lang="ts">
-	import LineChart from "$lib/ components/LineChart.svelte";
+	import LineChart from "$lib/components/LineChart.svelte";
 	export let data: {
 		records: townRecords[]
 		start: string

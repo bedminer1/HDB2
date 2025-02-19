@@ -5,6 +5,7 @@ import (
 
 	"github.com/bedminer1/hdb2/internal/calculation"
 	"github.com/bedminer1/hdb2/internal/db"
+	"github.com/bedminer1/hdb2/internal/models"
 	"github.com/labstack/echo/v4"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -19,7 +20,7 @@ func initHandler() *handler {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	db.AutoMigrate()
+	db.AutoMigrate(&models.HDBRecord{})
 
 	return &handler{DB: db}
 }
@@ -142,7 +143,7 @@ func (h *handler) handleGetLinearRegressionPrediction(c echo.Context) error {
 	predictions, historicalData, model := calculation.CalculateLinearRegression(xlyStats, timeAhead, dateBasis)
 
 	return c.JSON(200, echo.Map{
-		"model": model,
+		"model":           model,
 		"predictions":     predictions,
 		"historical_data": historicalData,
 	})
@@ -163,7 +164,7 @@ func (h *handler) handleGetPolynomialRegressionPrediction(c echo.Context) error 
 	predictions, historicalData, model := calculation.CalculatePolynomialRegression(xlyStats, 4, timeAhead, dateBasis)
 
 	return c.JSON(200, echo.Map{
-		"model": model,
+		"model":           model,
 		"predictions":     predictions,
 		"historical_data": historicalData,
 	})
@@ -181,16 +182,16 @@ func (h *handler) handleGetHoltWinters(c echo.Context) error {
 
 	// DO CALCULATIONS
 	params := calculation.HoltWintersParameters{
-		Alpha:       0.2,
-		Beta:        0.1,
-		Gamma:       0.3,
+		Alpha:        0.2,
+		Beta:         0.1,
+		Gamma:        0.3,
 		SeasonLength: 12,
 	}
 	xlyStats := calculation.CalculateXlyStats(dateFormat, records)
 	predictions, historicalData, model := calculation.CalculateHoltWinters(xlyStats, timeAhead, params)
 
 	return c.JSON(200, echo.Map{
-		"model": model,
+		"model":           model,
 		"predictions":     predictions,
 		"historical_data": historicalData,
 	})
