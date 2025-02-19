@@ -7,7 +7,8 @@
 	import { superForm } from "sveltekit-superforms";
 	import { toast } from "svelte-sonner";
 	import { zodClient } from "sveltekit-superforms/adapters";
-
+  	import { onMount } from "svelte";
+  import { PaneGroup } from "paneforge";
 
 	export let data
 
@@ -85,18 +86,47 @@
 			backgroundColor: colors[i].backgroundColor
 		}))
 	}
+
+	let isHorizontal = false;
+    let windowWidth: number;
+
+    onMount(() => {
+        if (typeof window !== 'undefined') {
+            windowWidth = window.innerWidth;
+
+            const handleResize = () => {
+                windowWidth = window.innerWidth;
+                isHorizontal = windowWidth > 768; // Update directly
+            };
+
+            window.addEventListener('resize', handleResize);
+            isHorizontal = windowWidth > 700; // Initial check
+
+            return () => {
+                window.removeEventListener('resize', handleResize);
+            };
+        }
+    });
+
+    $: if (typeof window !== 'undefined') isHorizontal = windowWidth > 700;
 </script>
 
 
 <div class="flex flex-col justify-center items-center h-screen w-full">
-	<Resizable.PaneGroup direction="horizontal" class="rounded-lg border">
-		<Resizable.Pane defaultSize={70}>
-			<LineChart
-			{...{
-				stats: generatedObjects,
-				label: "Price(SGD)"
-			}}>
-			</LineChart>
+	<Resizable.PaneGroup direction={isHorizontal ? "horizontal" : "vertical"} class="rounded-lg border">
+		<Resizable.Pane defaultSize={70} class="flex items-center">
+			<Resizable.PaneGroup direction="vertical" class="rounded-lg border">
+				<Resizable.Pane defaultSize={60}>
+					<LineChart
+					{...{
+						stats: generatedObjects,
+						label: "Price(SGD)"
+					}} />		
+				</Resizable.Pane>
+				<Resizable.Pane defaultSize={40}>
+
+				</Resizable.Pane>
+			</Resizable.PaneGroup>
 		</Resizable.Pane>
 		<Resizable.Handle />
 		<Resizable.Pane defaultSize={30}>
