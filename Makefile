@@ -6,6 +6,10 @@ frontend:
 backend:
 	@cd backend/cmd/api && go run .
 
+.PHONY: pb
+pb:
+	@cd backend/pb && ./pocketbase serve
+
 .PHONY: init_frontend
 init_frontend:
 	@cd frontend && npm install

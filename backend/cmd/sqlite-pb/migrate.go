@@ -76,8 +76,6 @@ func main() {
 		err = destDB.Table("hdb_records").Create(&pbRecord).Error // Use the new struct
 		if err != nil {
 			log.Printf("error creating record in destination DB: %v (Record ID: %s)", err, hdbRecord.ID)
-		} else {
-			fmt.Printf("Record %s migrated successfully\n", hdbRecord.ID)
 		}
 	}
 

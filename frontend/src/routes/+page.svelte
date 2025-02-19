@@ -1,5 +1,7 @@
 <script lang="ts">
+	import * as Resizable from "$lib/components/ui/resizable/index.js"
 	import LineChart from "$lib/components/LineChart.svelte";
+
 	export let data: {
 		records: townRecords[]
 		start: string
@@ -66,16 +68,37 @@
 	}
 </script>
 
+
 <div class="flex flex-col justify-center items-center h-screen w-full">
+	<Resizable.PaneGroup direction="horizontal" class="rounded-lg border">
+		<Resizable.Pane defaultSize={70}>
+			<LineChart
+			{...{
+				stats: generatedObjects,
+				label: "Price(SGD)"
+			}}>
+			</LineChart>
+		</Resizable.Pane>
+		<Resizable.Handle />
+		<Resizable.Pane defaultSize={30}>
+		  <Resizable.PaneGroup direction="vertical">
+			<Resizable.Pane defaultSize={25}>
+			  <div class="flex h-full items-center justify-center p-6">
+				<span class="font-semibold">Two</span>
+			  </div>
+			</Resizable.Pane>
+			<Resizable.Handle />
+			<Resizable.Pane defaultSize={75}>
+			  <div class="flex h-full items-center justify-center p-6">
+				<span class="font-semibold">Three</span>
+			  </div>
+			</Resizable.Pane>
+		  </Resizable.PaneGroup>
+		</Resizable.Pane>
+	  </Resizable.PaneGroup>
+	  
 	<form>
 		<input type="text" class="input" name="start" bind:value={start}>
 		<input type="text" class="input" name="end" bind:value={end}>
 	</form>
-	
-	<LineChart
-	{...{
-		stats: generatedObjects,
-		label: "Price(SGD)"
-	}}>
-	</LineChart>
 </div>
