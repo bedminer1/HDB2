@@ -1,15 +1,34 @@
 <script lang="ts">
 	import * as Resizable from "$lib/components/ui/resizable/index.js"
 	import LineChart from "$lib/components/LineChart.svelte";
+	import * as Form from "$lib/components/ui/form";
+	import { Input } from "$lib/components/ui/input";
+	import { formSchema } from "./schema";
+	import { superForm } from "sveltekit-superforms";
+	import { toast } from "svelte-sonner";
+	import { zodClient } from "sveltekit-superforms/adapters";
 
-	export let data: {
-		records: townRecords[]
-		start: string
-		end: string
-	}
 
-	let start = data.start
-	let end = data.end
+	export let data
+
+	const form = superForm(data.form, {
+		validators: zodClient(formSchema),
+		onUpdated: ({ form: f }) => {
+            console.log("Form updated:", f); // Debugging
+            if (f.valid) {
+                toast.success("Successfully submitted")
+            } else {
+                if ($message) {
+                    toast.error($message)
+                } else {
+                    toast.error("Please fix the errors in the form.");
+                }
+            }
+        }
+	})
+
+	const { form: formData, message, enhance } = form
+
 	let dates: string[] = []
 	$: {
 		dates = []
@@ -18,10 +37,10 @@
 		)
 		for (let record of recordWithMostRecords.records) {
 			const recordDate = record.time.substring(0, 7);
-			if (recordDate < start) {
+			if (recordDate < $formData.start) {
 				continue
 			}
-			if (recordDate > end) {
+			if (recordDate > $formData.end) {
 				break
 			}
 			dates.push(recordDate)
@@ -82,13 +101,28 @@
 		<Resizable.Handle />
 		<Resizable.Pane defaultSize={30}>
 		  <Resizable.PaneGroup direction="vertical">
-			<Resizable.Pane defaultSize={25}>
-			  <div class="flex h-full items-center justify-center p-6">
-				<span class="font-semibold">Two</span>
-			  </div>
+			<Resizable.Pane defaultSize={50}>
+				<form method="POST" use:enhance>
+					<Form.Field {form} name="start">
+					  <Form.Control let:attrs>
+						<Form.Label>Start Date</Form.Label>
+						<Input {...attrs} bind:value={$formData.start} />
+					  </Form.Control>
+					  <Form.Description />
+					  <Form.FieldErrors />
+					</Form.Field>
+					<Form.Field {form} name="end">
+						<Form.Control let:attrs>
+						  <Form.Label>End Date</Form.Label>
+						  <Input {...attrs} bind:value={$formData.end} />
+						</Form.Control>
+						<Form.Description />
+						<Form.FieldErrors />
+					  </Form.Field>
+				  </form>
 			</Resizable.Pane>
 			<Resizable.Handle />
-			<Resizable.Pane defaultSize={75}>
+			<Resizable.Pane defaultSize={50}>
 			  <div class="flex h-full items-center justify-center p-6">
 				<span class="font-semibold">Three</span>
 			  </div>
@@ -96,9 +130,4 @@
 		  </Resizable.PaneGroup>
 		</Resizable.Pane>
 	  </Resizable.PaneGroup>
-	  
-	<form>
-		<input type="text" class="input" name="start" bind:value={start}>
-		<input type="text" class="input" name="end" bind:value={end}>
-	</form>
 </div>
