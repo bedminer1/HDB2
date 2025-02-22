@@ -1,10 +1,12 @@
 package main
 
 import (
+	"net/http"
 	"strconv"
 
 	"github.com/bedminer1/hdb2/internal/calculation"
 	"github.com/bedminer1/hdb2/internal/db"
+	"github.com/bedminer1/hdb2/internal/llm"
 	"github.com/bedminer1/hdb2/internal/models"
 	"github.com/labstack/echo/v4"
 	"gorm.io/driver/sqlite"
@@ -226,4 +228,25 @@ func parseQueryParams(c echo.Context) (string, string, []string, string, string,
 	}
 
 	return start, end, towns, flatType, dateBasis, dateFormat, timeAhead
+}
+
+// ============ //
+// LLM ANALYSIS //
+// ============ //
+
+func (h *handler) handleGetLLMAnalysis(c echo.Context) error {
+	town := c.QueryParam("town") 
+	if town == "" {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"error": "town field cannot be empty",
+		})
+	}
+
+	bullThesis, _ := llm.FetchBullAnalysis(town)
+	bearThesis, _ := llm.FetchBearAnalysis(town)
+
+	return c.JSON(200, echo.Map{
+		"bull_thesis": bullThesis,
+		"bear_thesis": bearThesis,
+	})
 }

@@ -1,5 +1,6 @@
 backend/csvData
 backend/hdb.db
+backend/.env
 ai_microservice/.venv
 ai_microservice/models
 backend/pb

@@ -112,18 +112,19 @@
 </script>
 
 
-<div class="flex flex-col justify-center items-center h-screen w-full">
+<div class="flex flex-col justify-center items-center h-[95vh] w-full">
 	<Resizable.PaneGroup direction={isHorizontal ? "horizontal" : "vertical"} class="rounded-lg border">
 		<Resizable.Pane defaultSize={70} class="flex items-center">
-			<Resizable.PaneGroup direction="vertical" class="rounded-lg border">
-				<Resizable.Pane defaultSize={60}>
+			<Resizable.PaneGroup direction="vertical">
+				<Resizable.Pane defaultSize={60} class="p-2">
 					<LineChart
 					{...{
 						stats: generatedObjects,
 						label: "Price(SGD)"
 					}} />		
 				</Resizable.Pane>
-				<Resizable.Pane defaultSize={40}>
+				<Resizable.Handle />
+				<Resizable.Pane defaultSize={40} class="border">
 
 				</Resizable.Pane>
 			</Resizable.PaneGroup>
@@ -132,7 +133,13 @@
 		<Resizable.Pane defaultSize={30}>
 		  <Resizable.PaneGroup direction="vertical">
 			<Resizable.Pane defaultSize={50}>
-				<form method="POST" use:enhance>
+				<div class="flex h-full items-center justify-center p-6">
+					<span class="font-semibold">Two</span>
+				  </div>
+			</Resizable.Pane>
+			<Resizable.Handle />
+			<Resizable.Pane defaultSize={50}>
+				<form method="POST" use:enhance class="p-2">
 					<Form.Field {form} name="start">
 					  <Form.Control let:attrs>
 						<Form.Label>Start Date</Form.Label>
@@ -150,12 +157,6 @@
 						<Form.FieldErrors />
 					  </Form.Field>
 				  </form>
-			</Resizable.Pane>
-			<Resizable.Handle />
-			<Resizable.Pane defaultSize={50}>
-			  <div class="flex h-full items-center justify-center p-6">
-				<span class="font-semibold">Three</span>
-			  </div>
 			</Resizable.Pane>
 		  </Resizable.PaneGroup>
 		</Resizable.Pane>
